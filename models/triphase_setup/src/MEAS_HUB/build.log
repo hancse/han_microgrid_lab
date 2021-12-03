@@ -1,0 +1,10 @@
+MEAS_HUB.c:144:1: warning: initialization makes integer from pointer without a cast
+ };
+ ^
+MEAS_HUB.c:144:1: warning: (near initialization for ‘mmiStatic.modelChecksum[0]’)
+In file included from /usr/include/stdio.h:27:0,
+                 from /home/triphase/MATLAB/R2016b/rtw/c/src/rtiostream/rtiostreamtcpip/rtiostream_tcpip.c:24:
+/usr/include/features.h:148:3: warning: #warning "_BSD_SOURCE and _SVID_SOURCE are deprecated, use _DEFAULT_SOURCE" [-Wcpp]
+ # warning "_BSD_SOURCE and _SVID_SOURCE are deprecated, use _DEFAULT_SOURCE"
+   ^
+### Created executable: MEAS_HUB

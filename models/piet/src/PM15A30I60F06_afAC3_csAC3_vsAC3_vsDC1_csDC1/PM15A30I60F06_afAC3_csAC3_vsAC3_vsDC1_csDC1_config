@@ -1,0 +1,12 @@
+#! /bin/sh
+# Above line is just used for syntax highlighting in VIM
+
+# Config file for CIPC buffer process
+
+# Outputs
+
+log_APP.buffer_name = cipc_log_APP
+log_APP.buffer_order = 4
+
+#log_TC0.buffer_name = cipc_log_TC0
+#log_TC0.buffer_order = 4

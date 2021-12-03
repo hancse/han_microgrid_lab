@@ -1,0 +1,9 @@
+INFO Available CPU cores: 1 2 3
+INFO Task to core mapping: -DUSE_RTMODEL -DMAIN_TASK_AFF=1 -DMULTITASKING  -DTASK_0_AFF=1  -DTASK_1_AFF=2   
+INFO External mode task to core mapping:  -DEXT_MODE_AFF=1
+In file included from /usr/include/stdio.h:27:0,
+                 from /home/triphase/MATLAB/R2012b/rtw/c/src/rtiostream/rtiostreamtcpip/rtiostream_tcpip.c:24:
+/usr/include/features.h:148:3: warning: #warning "_BSD_SOURCE and _SVID_SOURCE are deprecated, use _DEFAULT_SOURCE" [-Wcpp]
+ # warning "_BSD_SOURCE and _SVID_SOURCE are deprecated, use _DEFAULT_SOURCE"
+   ^
+### Created executable: test_gui

@@ -1,0 +1,20 @@
+INFO Available CPU cores: 1 2 3
+INFO Task to core mapping: -DUSE_RTMODEL -DMAIN_TASK_AFF=1 -DMULTITASKING  -DTASK_0_AFF=1  -DTASK_1_AFF=2  -DTASK_2_AFF=3 
+INFO External mode task to core mapping:  -DEXT_MODE_AFF=1
+dos2unix: converting file HW_PM15A30I60F06.h to Unix format...
+event_logger.c: In function ‘nrt_file_write’:
+event_logger.c:101:21: warning: ‘return’ with a value, in function returning void
+                     return -1;
+                     ^
+event_logger.c:105:17: warning: implicit declaration of function ‘write’ [-Wimplicit-function-declaration]
+                 write(fd, data->snapshot, (data->log_nr_frames*data->buffer->frameSize)); /* Write file */
+                 ^
+event_logger.c:106:17: warning: implicit declaration of function ‘close’ [-Wimplicit-function-declaration]
+                 close(fd);
+                 ^
+In file included from /usr/include/stdio.h:27:0,
+                 from /home/triphase/MATLAB/R2012b/rtw/c/src/rtiostream/rtiostreamtcpip/rtiostream_tcpip.c:24:
+/usr/include/features.h:148:3: warning: #warning "_BSD_SOURCE and _SVID_SOURCE are deprecated, use _DEFAULT_SOURCE" [-Wcpp]
+ # warning "_BSD_SOURCE and _SVID_SOURCE are deprecated, use _DEFAULT_SOURCE"
+   ^
+### Created executable: HW_PM15A30I60F06
