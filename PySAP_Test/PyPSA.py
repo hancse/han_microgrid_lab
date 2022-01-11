@@ -3,7 +3,7 @@ import pandas as pd
 from read_data import read_file
 
 # use 24 hour period for consideration
-index = pd.date_range("2021-01-01 00:00","2021-01-02 23:00", freq="H")
+#index = pd.date_range("2021-01-01 00:00","2021-01-02 23:00", freq="H")
 
 # consumption pattern of BEV
 #bev_usage = pd.Series([0.]*7 + [0]*2 + [2.]*4 + [9.]*4 + [0.]*2 + [0.]*5 +[0.]*7 + 
@@ -20,19 +20,19 @@ index = pd.date_range("2021-01-01 00:00","2021-01-02 23:00", freq="H")
 
 
 filename = 'demo.csv'
-P_pv_pu_Test, bev_usage = read_file(filename,index)
+P_pv_pu_Test,bev_usage,day_p_max_pu,night_p_max_pu,index = read_file(filename)
 
 P_pv_pu_Test = P_pv_pu_Test/3.5
 
 # day tariff
-day_p_max_pu = pd.Series(0, index=index)
-day_p_max_pu["2021-01-01 07:00":"2021-01-01 22:00"] = 1.
-day_p_max_pu["2021-01-02 07:00":"2021-01-02 22:00"] = 1.
+#day_p_max_pu = pd.Series(0, index=index)
+#day_p_max_pu["2021-01-01 07:00":"2021-01-01 22:00"] = 1.
+#day_p_max_pu["2021-01-02 07:00":"2021-01-02 22:00"] = 1.
 
 # night tariff
-night_p_max_pu = pd.Series(0, index=index)
-night_p_max_pu["2021-01-01 00:00":"2021-01-01 07:00"] = 1.
-night_p_max_pu["2021-01-02 00:00":"2021-01-02 07:00"] = 1.
+#night_p_max_pu = pd.Series(0, index=index)
+#night_p_max_pu["2021-01-01 00:00":"2021-01-01 07:00"] = 1.
+#night_p_max_pu["2021-01-02 00:00":"2021-01-02 07:00"] = 1.
 
 
 #print(index[0:10])
@@ -92,6 +92,7 @@ network.add("StorageUnit",
 
 
 # marginal cost for discharge
+
 network.add("StorageUnit",
             "Grid_night",
             bus="Grid_night",
@@ -112,7 +113,6 @@ network.add("Link",
             efficiency=0.9)
 
 
-
 #network.lopf(network.snapshots)
 network.lopf()
 
@@ -127,4 +127,6 @@ s_data = [network.generators_t['p']['PV panel'],network.loads_t['p']['House Load
 
 s_data = pd.DataFrame(s_data).transpose()
 
-s_data.to_csv('results.csv',index = False)
+s_data.to_csv('/home/pi/PySAP_Test/results.csv',index = False)
+
+#print(Bat_SOC)
