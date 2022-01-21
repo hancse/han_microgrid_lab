@@ -309,6 +309,18 @@ class Controller:
         self.V_battery = int(out_data.item() * 5) / 5
         self.SOC = round(self.f(self.V_battery).item(),1)
         
+    def find_SOC_past(self):
+        out = []
+        cs_out = self.m.capture_data('cs/u_out', samples = 50, decimation = 2)
+        [out_data] = cs_out.data.values()
+        
+        for i in range(len(out_data)):
+            V_battery = int(out_data[i] * 5) / 5
+            SOC = round(self.f(V_battery).item(),1)
+            out.append(SOC)
+            
+        return out
+        
     # From solar panels to poles
     def demo_from_sl(self,P):
         """This function is only for demo mode.
