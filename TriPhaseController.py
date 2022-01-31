@@ -297,8 +297,45 @@ class Controller:
         #u_dcbus = self.m.capture_data('af/u_dcbus', samples = 2000, decimation = 1)
         #u_dcbus.plot()
         self.m.set_parameter('af/enable', 1)
-        time.sleep(1)
+        time.sleep(2)
         self.m.set_parameter('syst/precharge_P30_1', 0)
+        
+        #self.m.set_parameter('cs/i_ph', 0)
+        
+    def stop_model(self):
+        """Stop the triphase control model.
+        """
+        
+        # change the current SP back to 0
+        self.m.set_parameter('cs/i_ph', 0)
+        # Disconnect the cs
+        self.m.set_parameter('cs/enable', 0)
+        # Disconnect the transfomer
+        self.m.set_parameter('transfo/connect', 0)
+        
+        # Disable the Af
+        self.m.set_parameter('af/enable', 0)
+        time.sleep(20)
+        # Disable external command
+        self.m.set_parameter('COMMAND_CENTER/External_param', 0)
+        
+        #Stop the model
+        self.m.stop()
+    
+    def set_battery_control(self,c_sp):
+        """turn on the battery control.
+           c_sp: current setpoint for charging and discharing the battery.
+           
+        """
+        
+        # connect dc bus with battery
+        self.m.set_parameter('transfo/connect', 1)
+        time.sleep(5)
+        self.m.set_parameter('cs/enable', 1)
+        m.set_parameter('cs/i_ph', c_sp)
+        
+        #self.m.set_parameter('cs/i_ph', 0)    
+        
         
     def find_SOC(self):
         """Measure the output voltage of the battery and calculate the SOC.
@@ -308,6 +345,8 @@ class Controller:
             
         self.V_battery = int(out_data.item() * 5) / 5
         self.SOC = round(self.f(self.V_battery).item(),1)
+        
+        return self.SOC
         
     def find_SOC_past(self):
         out = []
@@ -359,6 +398,7 @@ class Controller:
         #self.SOC = self.SOC + (float(P)/57000)*100
         
     def set_advanced_callback(self, fnc):
+        
         """Assign the callback function to control the model when running in advanced mode.
         The callback function must have the format: control_callback(SOC, EV_arr, PV_arr)
         in which EV_arr and PV_arr are the predictions of P_ev and P_pv, SOC is the current State of Charge,
@@ -481,3 +521,7 @@ class Controller:
         else:
             # Run in advanced mode
             return self.advanced_controller(self.full_data)
+
+            
+            
+        
