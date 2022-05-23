@@ -1,0 +1,5 @@
+Day,Weekday,Hour,E_LastHour,E_1,E_2,E_3,E_4,E_5,E_6,E_7,E_8,E_9,E_10,E_11,E_12
+04/25/22,0,15,0.0,tensor(0.4399),tensor(0.2889),tensor(0.2075),tensor(0.2893),tensor(0.2336),tensor(0.1673),tensor(0.1315),tensor(0.0997),tensor(0.2587),tensor(0.3704),tensor(0.4200),tensor(0.6869)
+04/25/22,0,15,0.0,tensor(0.4399),tensor(0.2889),tensor(0.2075),tensor(0.2893),tensor(0.2336),tensor(0.1673),tensor(0.1315),tensor(0.0997),tensor(0.2587),tensor(0.3704),tensor(0.4200),tensor(0.6869)
+04/25/22,0,15,0.0,tensor(0.4399),tensor(0.2889),tensor(0.2075),tensor(0.2893),tensor(0.2336),tensor(0.1673),tensor(0.1315),tensor(0.0997),tensor(0.2587),tensor(0.3704),tensor(0.4200),tensor(0.6869)
+04/25/22,0,15,0.0,tensor(0.4399),tensor(0.2889),tensor(0.2075),tensor(0.2893),tensor(0.2336),tensor(0.1673),tensor(0.1315),tensor(0.0997),tensor(0.2587),tensor(0.3704),tensor(0.4200),tensor(0.6869)

@@ -1,0 +1,11 @@
+Features to include:
+--------------------
+* Add logging functionality to the entire library
+* Add a heartbeat to operate safely for a long period of time
+* Plot with bokeh instead of matplotlib ==> higher degree of interaction
+* Save static plots
+* Interact with a database (read and write), mongoDB
+* Add bokeh server to interface/query the database
+* All the signals and parameters are shown with the subsystem above
+* Add signal names to the user workspace, access as signals.u_out (rely on autofill)
+* Alter find_targets to cope with various ips and not just 192.168.0.xxx
