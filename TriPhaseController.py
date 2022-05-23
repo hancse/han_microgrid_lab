@@ -12,6 +12,23 @@ from scipy.interpolate import interp1d   #for piecewise linear
 from IPython.display import display
 from pathlib import Path
 
+''' If the time diff is larger than 600s (10 minutes), then data are assumed loss and E is 0 '''
+
+def removeLargeDiff(diff_in):
+    if (diff_in > 600):
+        return 0
+    return diff_in
+
+def calculateEnergy(data_in):
+    data_out = data_in.copy()
+    data_out['Power'] = data_out['I1']*data_out['V1'] + data_out['I2']*data_out['V2'] + data_out['I3']*data_out['V3']
+    data_out.loc[:,'Time_diff'] = data_out.Time_diff.shift(-1)
+    data_out = data_out.iloc[:-1,:]
+    data_out['Time_diff'] = data_out.Time_diff.map(removeLargeDiff)
+    data_out['Energy_kWh'] = data_out['Power'] * data_out['Time_diff'] / 3600000
+    data_out = data_out[['Energy_kWh']].groupby(pd.Grouper(freq='1H')).sum()
+    return data_out
+
 class Database:
     """ A ssh connection to the databse"""
     def __init__ (self, host_ip = "192.168.110.7", port = 22, password = "controlsystem", username = "pi", wdir = '/mnt/dav/Data', PVdatabase = "modbusData.db", EVdatabase = "usertable.sqlite3"):       
@@ -81,6 +98,7 @@ class Database:
         PV_data = PV_data.sort_values(by='Time', ascending=True)
         PV_data['Time'] = pd.to_datetime(PV_data['Time'],unit='s')
         PV_data = PV_data.set_index('Time')
+
         PV_data = PV_data.resample('60min').mean()
         PV_data = PV_data.tail(hours)
         #PV_data = PV_data.tail(1)
@@ -92,6 +110,87 @@ class Database:
         P3_list = np.array(PV_data['P3'].to_list())
         
         return np.add(P1_list,P2_list,P3_list)
+    
+        
+    def read_PV_df (self, hours=1, host_ip = "192.168.110.7", port = 22, password = "controlsystem", username = "pi", wdir = '/mnt/dav/Data'):
+        """
+        Read the latest PV data from the databse.
+        
+        Keyword arguments:
+        hours -- number of hours of data that need to be read (default 1).
+        
+        Return:
+        Pandas dataframe with hourly accumulated PV Energy.
+        """
+        
+        self.ssh = paramiko.SSHClient()
+        self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        self.ssh.connect(host_ip, port, username, password)
+
+        self.ftp = self.ssh.open_sftp()
+    
+        self.data_d = self.ftp.chdir(wdir)
+        self.cwd = self.ftp.getcwd()
+        self.path = Path.cwd()
+        
+        self.ftp.get(self.PVdatabase,self.PVdatabase,callback=None)
+        
+        self.conn_PV = sqlite3.connect(self.PVdatabase)
+        
+        rows = hours*50
+        
+        query = '''SELECT Time,P1,P2,P3 FROM PV ORDER BY No DESC LIMIT ''' + str(rows)
+        PV_data = pd.read_sql_query(query, self.conn_PV)
+        PV_data['Time'] = pd.to_datetime(PV_data['Time'],unit='s')
+    
+        # PV data hourly rate resample
+        PV_data = PV_data.sort_values(by='Time', ascending=True)
+        PV_data['Time'] = pd.to_datetime(PV_data['Time'],unit='s')
+        PV_data = PV_data.set_index('Time')
+        
+        PV_data.loc[:,'Time_diff'] = (PV_data.index.to_series().diff()).dt.total_seconds()
+        return calculateEnergy(PV_data)
+    
+    
+    def read_Grid_df (self, hours=1, host_ip = "192.168.110.7", port = 22, password = "controlsystem", username = "pi", wdir = '/mnt/dav/Data'):
+        """
+        Read the latest Grid data from the databse.
+        
+        Keyword arguments:
+        hours -- number of hours of data that need to be read (default 1).
+        
+        Return:
+        Pandas dataframe with hourly accumulated Grid Energy.
+        """
+        
+        self.ssh = paramiko.SSHClient()
+        self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        self.ssh.connect(host_ip, port, username, password)
+
+        self.ftp = self.ssh.open_sftp()
+    
+        self.data_d = self.ftp.chdir(wdir)
+        self.cwd = self.ftp.getcwd()
+        self.path = Path.cwd()
+        
+        self.ftp.get(self.PVdatabase,self.PVdatabase,callback=None)
+        
+        self.conn_Grid = sqlite3.connect(self.PVdatabase)
+        
+        rows = hours*50
+        
+        query = '''SELECT Time,P1,P2,P3 FROM Grid ORDER BY No DESC LIMIT ''' + str(rows)
+        Grid_data = pd.read_sql_query(query, self.conn_Grid)
+        Grid_data['Time'] = pd.to_datetime(Grid_data['Time'],unit='s')
+    
+        # Grid data hourly rate resample
+        Grid_data = Grid_data.sort_values(by='Time', ascending=True)
+        Grid_data['Time'] = pd.to_datetime(Grid_data['Time'],unit='s')
+        Grid_data = Grid_data.set_index('Time')
+        
+        Grid_data.loc[:,'Time_diff'] = (Grid_data.index.to_series().diff()).dt.total_seconds()
+        return calculateEnergy(Grid_data)
+            
     
     def read_EV (self, hours=1, host_ip = "192.168.110.7", port = 22, password = "controlsystem", username = "pi", wdir = '/mnt/dav/Data'):
         """
